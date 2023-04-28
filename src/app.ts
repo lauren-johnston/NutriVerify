@@ -5,6 +5,7 @@ import cors from 'cors';
 import { webpageExtractionPrompt, healthAPISummarizationPrompt} from './prompt';
 import { Configuration, OpenAIApi } from 'openai';
 import cheerio from 'cheerio';
+import { multiVitaminSample } from './sampleData';
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 const app = express();
 
+// TODO(Lauren): for security, only allow CORS for chrome extension. Don't need
+// to worry about this as it is only running locally.
 app.use(cors());
 app.use(express.json());
 
@@ -153,54 +156,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/process-webpage-data', async (req, res) => {
-  // TODO(Lauren): This is a demo only: to be removed 
-  // const sample = {"results": [
-  //   {
-  //   "ingredient": "GABA",
-  //   "claims": [
-  //       {
-  //           "claim": "promotes relaxation",
-  //           "correctness": "Found potential supporting evidence",
-  //           "supporting_evidence": [
-  //               {
-  //                   "source": "Psychobiotics",
-  //                   "url": "",
-  //                   "summary": "Probiotic treatment with Lactobacillus helveticus R0052 and Bifidobacterium longum R0175 increased the secretion of anti-inflammatory cytokines and decreased pro-inflammatory cytokines, which may promote relaxation through the gut-brain axis."
-  //               }
-  //           ],
-  //           "conflicting_evidence": []
-  //       },
-  //       {
-  //           "claim": "helps combat stress",
-  //           "correctness": "Found potential supporting evidence",
-  //           "supporting_evidence": [
-  //               {
-  //                   "source": "Probiotics",
-  //                   "url": "",
-  //                   "summary": "TLP (a combination of Lactobacillus caseiS1, Enterococcus faeciumS4, and L. harbinensisS6) showed an increase in GABA production, a neurotransmitter linked to stress reduction."
-  //               },
-  //               {
-  //                   "source": "Prebiotics",
-  //                   "url": "",
-  //                   "summary": "HMO (human milk oligosaccharides) treatment increased GABA levels in both children and adults, which is linked to the gut-brain axis and may help combat stress."
-  //               }
-  //           ],
-  //           "conflicting_evidence": []
-  //       }
-  //   ],
-  //   "reported_benefits": [
-  //       "promotes relaxation",
-  //       "helps combat stress",
-  //       "reduces inflammation",
-  //       "improves gastrointestinal activity",
-  //       "enhances anti-anxiety homeostasis"
-  //   ],
-  //   "reported_cons": [
-  //       "survival rates of some probiotic strains decrease during gastric phase"
-  //   ]
-  //   }]}
-    
+  // TODO(Lauren): This is for a demo only: to be removed 
+  // const sample = multiVitaminSample; 
   // res.json(sample);
+
   const webpageData = req.body.data;
   console.log(webpageData);
   console.log("Got a request to process the webpage data!");
