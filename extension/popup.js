@@ -4,38 +4,115 @@ document.addEventListener("DOMContentLoaded", () => {
   
     function displaySuccess() {
       statusElement.innerText = "Success!";
-      statusElement.style.color = "green";
+      statusElement.style.color = "black";
     }
   
     function displayError() {
       statusElement.innerText = "Error!";
       statusElement.style.color = "red";
     }
+
+    function displayLoading() {
+        statusElement.innerHTML = "<div class='loading'></div>";
+      }
+      
+      function displayResults(data) {
+        let totalClaims = 0;
+        let supportedClaims = 0;
+        
+        data.results.forEach(result => {
+          totalClaims += result.claims.length;
+          supportedClaims += result.claims.filter(
+            (claim) => claim.correctness === "Found potential supporting evidence"
+          ).length;
+        });
+      
+        const supportedPercentage = ((supportedClaims / totalClaims) * 100).toFixed(2);
+      
+        document.getElementById("claims-supported").innerText = supportedPercentage;
+        document.getElementById("results").style.display = "block";
+      }
+      
+      function displayReport(data) {
+        const reportTableBody = document.getElementById("report-table-body");
+        reportTableBody.innerHTML = "";
+        data.results.forEach((result) => {
+            result.claims.forEach((claim) => {
+                const row = document.createElement("tr");
+      
+                const ingredientCell = document.createElement("td");
+                ingredientCell.textContent = result.ingredient;
+                row.appendChild(ingredientCell);
+      
+                const claimCell = document.createElement("td");
+                claimCell.textContent = claim.claim;
+                row.appendChild(claimCell);
+            
+                const correctnessCell = document.createElement("td");
+                correctnessCell.textContent = claim.correctness;
+                row.appendChild(correctnessCell);
+            
+                const supportingEvidenceCell = document.createElement("td");
+                supportingEvidenceCell.innerHTML = claim.supporting_evidence
+                  .map(
+                    (evidence) =>
+                      `<a href="${evidence.url}" target="_blank">${evidence.source}</a>`
+                  )
+                  .join(", ");
+                row.appendChild(supportingEvidenceCell);
+            
+                const conflictingEvidenceCell = document.createElement("td");
+                conflictingEvidenceCell.innerHTML = claim.conflicting_evidence
+                  .map(
+                    (evidence) =>
+                      `<a href="${evidence.url}" target="_blank">${evidence.source}</a>`
+                  )
+                  .join(", ");
+                row.appendChild(conflictingEvidenceCell);
+            
+                reportTableBody.appendChild(row);
+              });            
+        })
+      
+        document.getElementById("report").style.display = "block";
+      }
+
+    function handleResponse(response) {
+        displayResults(response);
+      
+        document.getElementById("view-report").addEventListener("click", () => {
+          displayReport(response);
+        });
+      }
   
     function sendToServer(textContent) {
-      fetch("http://localhost:3000/process-webpage-data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data: textContent }),
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error("Server returned non-200 status code");
-          }
+        fetch("http://localhost:3000/process-webpage-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data: textContent }),
         })
-        .then((data) => {
-          console.log("Server response:", data);
-          displaySuccess();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          displayError();
-        });
+          .then((response) => {
+            if (response.status === 200) {
+              return response.json();
+            } else {
+              throw new Error("Server returned non-200 status code");
+            }
+          })
+          .then((data) => {
+            console.log("Server response:", data);
+            displaySuccess();
+            handleResponse(data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            displayError();
+          });
     }
+
+    
+      
   
     scrapeBtn.addEventListener("click", () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -57,6 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
       });
-    });
+    
+  document.getElementById("back").addEventListener("click", () => {
+    document.getElementById("report").style.display = "none";
+    document.getElementById("results").style.display = "block";
   });
   
+});
+});

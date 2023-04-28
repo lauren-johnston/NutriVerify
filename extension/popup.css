@@ -1,0 +1,84 @@
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    width: 400px;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+button {
+    background-color: #4a6aff;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2a4ad6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table,
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#status {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.loading {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #4a6aff;
+}
+
+#slogan {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: #333;
+}

@@ -1,18 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <style>
-      body {
-        width: 200px;
-        height: 100px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>NutriVerify</h1>
-    <button id="scrape-btn">Check supplement facts</button>
-    <p id="status"></p>
-    <script src="popup.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <h1 id="title">NutriVerify</h1>
+  <h2 id="slogan">The fact checker for supplements</h2>
+  <button id="scrape-btn">Check this supplement</button>
+  <div id="status"></div>
+  <div id="results" style="display: none;">
+    <h2>Product claims supported by top research: <span id="claims-supported"></span>%</h2>
+    <button id="view-report">View full report</button>
+  </div>
+  <div id="report" style="display: none;">
+    <h2>Full Report</h2>
+    <table id="report-table">
+      <thead>
+        <tr>
+          <th>Ingredient</th>
+          <th>Claim</th>
+          <th>Correctness</th>
+          <th>Supporting Evidence</th>
+          <th>Conflicting Evidence</th>
+        </tr>
+      </thead>
+      <tbody id="report-table-body"></tbody>
+    </table>
+    <button id="back">Back</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
 </html>
