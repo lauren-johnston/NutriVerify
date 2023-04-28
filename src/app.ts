@@ -6,7 +6,7 @@ import { webpageExtractionPrompt, healthAPISummarizationPrompt} from './prompt';
 import { Configuration, OpenAIApi } from 'openai';
 import cheerio from 'cheerio';
 import { multiVitaminSample } from './sampleData';
-
+import { ActiveIngredient, WebpageExtraction, HealthAPISummarization } from './interfaces';
 dotenv.config();
 
 const configuration = new Configuration({
@@ -19,52 +19,6 @@ const app = express();
 // to worry about this as it is only running locally.
 app.use(cors());
 app.use(express.json());
-
-interface WebpageExtraction {
-  product_name: string;
-  brand: string;
-  price: string;
-  size: string;
-  flavor: string;
-  diet_type: string;
-  age_range: string;
-  item_form: string;
-  product_description: string;
-  product_features: string[];
-  rating: string;
-  total_ratings: number;
-  active_ingredients: {
-    ingredient: string;
-    claims: string[];
-  }[];
-}
-
-interface Claim {
-    claim: string;
-    correctness: string;
-    supporting_evidence: {
-      source: string;
-      url: string;
-      summary: string;
-    }[];
-    conflicting_evidence: {
-      source: string;
-      url: string;
-      summary: string;
-    }[];
-};
-
-interface ActiveIngredient {
-  ingredient: string;
-  claims: Claim[];
-  reported_benefits?: string[];
-  reported_cons?: string[];
-}
-
-interface HealthAPISummarization {
-  product_name: string;
-  active_ingredients: ActiveIngredient[];
-}
 
 async function callGPT4(input: string, prompt: string): Promise<string | undefined> {
   // TODO(Lauren): This is a temporary optimization to reduce the number 
