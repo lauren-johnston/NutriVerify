@@ -70,10 +70,14 @@ async function getTopCitedAbstracts(supplement: string, limit: number): Promise<
       const fetchResponse = await axios.get(fetchUrl);
       const $ = cheerio.load(fetchResponse.data, { xmlMode: true });
       const abstracts: string[] = [];
-  
+      let count = 0;
+
       $('PubmedArticle').each((_, article) => {
         const abstractText = $(article).find('AbstractText').text();
-        abstracts.push(abstractText);
+        const pmid = pmids[count];
+        const link = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&retmode=xml`;
+        abstracts.push(abstractText + "\n source:" + link);
+        count++;
       });
   
       return abstracts;
