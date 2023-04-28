@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "Simple Page Scraper",
+    "version": "1.0",
+    "description": "Scrapes the text content of the active tab",
+    "permissions": ["scripting", "activeTab"],
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
+  

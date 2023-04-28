@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import cors from 'cors';
+
 import { Configuration, OpenAIApi } from 'openai';
 dotenv.config();
 
@@ -9,6 +11,10 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 const app = express();
+
+// TODO(Lauren): This is unsafe--only for local testing. In future, use:
+// app.use(cors({ origin: "chrome-extension://pkdhegdbignijifaofblgpoibmdkkakm" }));
+app.use(cors());
 app.use(express.json());
 
 async function callGPT4(input: string): Promise<string | undefined> {
