@@ -1,4 +1,4 @@
-const multiVitaminSample = {"results": [
+const multiVitaminSample = {"active_ingredients": [
         {
           "ingredient": "Omega-3 EPA & DHA",
           "claims": [
@@ -117,7 +117,7 @@ const multiVitaminSample = {"results": [
       ]
     }
 
-const ollyStressVitaminSample = {"results": [
+const ollyStressVitaminSample = {"active_ingredients": [
     {
     "ingredient": "GABA",
     "claims": [

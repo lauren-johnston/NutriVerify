@@ -21,6 +21,14 @@ app.use(cors());
 app.use(express.json());
 
 async function callGPT4(input: string, prompt: string): Promise<string | undefined> {
+  /**
+ * Calls the GPT-4 model to generate a response to a prompt and a given input string.
+ *
+ * @param {string} input - The input string to generate a response for.
+ * @param {string} prompt - The prompt to use for generating the response.
+ * @returns {Promise<string|undefined>} A Promise that resolves to the generated response string,
+ * or `undefined` if the response could not be generated.
+ */
   // TODO(Lauren): This is a temporary optimization to reduce the number 
   // of tokens sent to GPT4. Need to add a more robust preprocessing algorithm.
   const targetSnippet = "See questions and answers";
@@ -41,6 +49,13 @@ async function callGPT4(input: string, prompt: string): Promise<string | undefin
 
 
 async function getTopCitedAbstracts(supplement: string, limit: number): Promise<string[] | null> {
+  /**
+ * Retrieve the top cited abstracts for a given supplement using PubMed API.
+ *
+ * @param supplement A string representing the supplement to search for.
+ * @param limit A number specifying the maximum number of abstracts to retrieve.
+ * @returns A Promise that resolves to an array of strings representing the abstract texts, or null if an error occurs.
+ */
   const query = `${supplement}+supplement`;
 
   const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${query}&sort=citations&retmax=${limit}&retmode=json`;
@@ -74,14 +89,32 @@ async function getTopCitedAbstracts(supplement: string, limit: number): Promise<
 }
 
 async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<any> {
+/**
+ * Evaluate claims for a given active ingredient using GPT-4 summarization.
+ * 
+ * @param activeIngredient - The active ingredient to evaluate claims for.
+ * @returns A promise that resolves to the GPT-4 summary of the claims.
+ * @throws If the API call to get top-cited abstracts or GPT-4 summarization fails.
+ */
+  // Get the top-cited abstracts for the active ingredient
   const topCitedAbstracts = await getTopCitedAbstracts(activeIngredient.ingredient, 5);
+
   // Use the abstracts to populate the claims
   const inputData = JSON.stringify({activeIngredient, topCitedAbstracts});
+
+  // Call GPT-4 to generate a summary of the claims
   const gpt4Summary = await callGPT4(inputData, healthAPISummarizationPrompt);
+
   return gpt4Summary;
 }
 
 async function generateOutput(gpt4ParsedData: string | undefined): Promise<HealthAPISummarization | {}> {
+  /**
+ * Generate a HealthAPISummarization from a string of GPT-4 parsed data.
+ * 
+ * @param gpt4ParsedData - The string of GPT-4 parsed data to generate the summary from.
+ * @returns A Promise that resolves to a HealthAPISummarization object, or an empty object if no data is provided.
+ */
   if (!gpt4ParsedData) {
     return {};
   }
@@ -118,9 +151,11 @@ app.post('/process-webpage-data', async (req, res) => {
   console.log(webpageData);
   console.log("Got a request to process the webpage data!");
   const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
+  console.log("Parsed the webpage data...", gpt4ParsedData);
   // Generate final JSON output
   const output = await generateOutput(gpt4ParsedData);
   const jsonOutput = JSON.stringify(output);
+  
   console.log("Here is the final output of the supplement factcheck:" + jsonOutput);
   res.json(jsonOutput);
 });

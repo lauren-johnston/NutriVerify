@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let totalClaims = 0;
         let supportedClaims = 0;
         
-        data.results.forEach(result => {
+        data.active_ingredients.forEach(result => {
           totalClaims += result.claims.length;
           supportedClaims += result.claims.filter(
             (claim) => claim.correctness === "Found potential supporting evidence"
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       function displayReport(data) {
         const reportTableBody = document.getElementById("report-table-body");
         reportTableBody.innerHTML = "";
-        data.results.forEach((result) => {
+        data.active_ingredients.forEach((result) => {
             result.claims.forEach((claim) => {
                 const row = document.createElement("tr");
       

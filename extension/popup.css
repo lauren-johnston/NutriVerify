@@ -82,3 +82,14 @@ tr:nth-child(even) {
     margin-bottom: 20px;
     color: #333;
 }
+
+.chrome-extension-popup {
+    overflow-x: scroll;
+  }
+  
+  table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    white-space: wrap;
+  }
