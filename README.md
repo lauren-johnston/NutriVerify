@@ -1,6 +1,8 @@
 # NutriVerify
 Fact check information about supplements
 
+Demo Video: https://www.loom.com/share/ed3f2bd2f29b45f29a0be982a7dac51f
+
 ![Demo](media/demo.png)
 
 
