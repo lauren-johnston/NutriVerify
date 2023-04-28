@@ -21,8 +21,11 @@ Navigate to localhost:3000/
 
 ## Next Steps
 [ ] Handle outstanding TODOs
+
 [ ] Add more robust error handling
+
 [ ] Add tests for API and Chrome extension
+
 [ ] Convert Chrome extension to React to better handle state management, UI component organization
 
 ## Project System Design

@@ -84,6 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
           displayReport(response);
         });
       }
+
+    function createTimeoutSignal(timeout) {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        
+        setTimeout(() => controller.abort(), timeout);
+        return signal;
+    }
   
     function sendToServer(textContent) {
         fetch("http://localhost:3000/process-webpage-data", {
@@ -92,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ data: textContent }),
+          signal: createTimeoutSignal(7 * 60 * 1000), // 7 minutes
         })
           .then((response) => {
             if (response.status === 200) {
