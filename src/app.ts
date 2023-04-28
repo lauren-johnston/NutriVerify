@@ -7,6 +7,7 @@ import { Configuration, OpenAIApi } from 'openai';
 import cheerio from 'cheerio';
 import { multiVitaminSample } from './sampleData';
 import { ActiveIngredient, WebpageExtraction, HealthAPISummarization } from './interfaces';
+import { preprocessInput } from './helpers';
 dotenv.config();
 
 const configuration = new Configuration({
@@ -16,7 +17,7 @@ const openai = new OpenAIApi(configuration);
 const app = express();
 
 // TODO(Lauren): for security, only allow CORS for chrome extension. Don't need
-// to worry about this as it is only running locally.
+// to worry about this yet as it is only running locally.
 app.use(cors());
 app.use(express.json());
 
@@ -31,9 +32,7 @@ async function callGPT4(input: string, prompt: string): Promise<string | undefin
  */
   // TODO(Lauren): This is a temporary optimization to reduce the number 
   // of tokens sent to GPT4. Need to add a more robust preprocessing algorithm.
-  const targetSnippet = "See questions and answers";
-  const [trimmedString] = input.split(targetSnippet);
-  console
+  const trimmedString = preprocessInput(input);
   const response = await openai.createChatCompletion({
     model: 'gpt-4-0314',
     messages: [
