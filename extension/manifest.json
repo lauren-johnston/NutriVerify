@@ -1,11 +1,16 @@
 {
     "manifest_version": 3,
-    "name": "Simple Page Scraper",
+    "name": "NutriVerify",
     "version": "1.0",
-    "description": "Scrapes the text content of the active tab",
+    "description": "Fact check information about supplements",
     "permissions": ["scripting", "activeTab"],
     "action": {
       "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
     }
   }
   

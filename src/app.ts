@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import cors from 'cors';
-import { webpageExtractionPrompt, healthAPISummarizationPrompt } from './prompt';
+import { webpageExtractionPrompt, healthAPISummarizationPrompt} from './prompt';
 import { Configuration, OpenAIApi } from 'openai';
 import cheerio from 'cheerio';
 
@@ -64,12 +64,16 @@ interface HealthAPISummarization {
 }
 
 async function callGPT4(input: string, prompt: string): Promise<string | undefined> {
+  const targetSnippet = "See questions and answers";
+
+  const [trimmedString] = input.split(targetSnippet);
+  console.log(trimmedString);
   const response = await openai.createChatCompletion({
-    model: 'gpt-4',
+    model: 'gpt-4-0314',
     messages: [
       {
         "role": "user",
-        "content": prompt + " " + input
+        "content": prompt + " " + trimmedString
       }
     ],
   });
@@ -114,10 +118,9 @@ async function getTopCitedAbstracts(supplement: string, limit: number): Promise<
 }
 
 async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<any> {
-  const topCitedAbstracts = await getTopCitedAbstracts(activeIngredient.ingredient, 10);
+  const topCitedAbstracts = await getTopCitedAbstracts(activeIngredient.ingredient, 5);
   // Use the abstracts to populate the claims
   const inputData = JSON.stringify({activeIngredient, topCitedAbstracts});
-  console.log("inputData:", inputData);
   const gpt4Summary = await callGPT4(inputData, healthAPISummarizationPrompt);
   return gpt4Summary;
 }
@@ -148,13 +151,14 @@ async function generateOutput(gpt4ParsedData: string | undefined): Promise<Healt
 }
 
 app.get('/', (req, res) => {
-  res.send('Hello from the server!');
+  res.send('Hello from the NutriVerify API!');
 })
 
 app.post('/process-webpage-data', async (req, res) => {
   const webpageData = req.body.data;
+  console.log("made it");
+
   const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
-  console.log("got gpt4ParsedData", gpt4ParsedData);
   // Generate final JSON output
   const output = await generateOutput(gpt4ParsedData);
 
