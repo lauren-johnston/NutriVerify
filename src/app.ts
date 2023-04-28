@@ -64,10 +64,11 @@ interface HealthAPISummarization {
 }
 
 async function callGPT4(input: string, prompt: string): Promise<string | undefined> {
+  // TODO(Lauren): This is a temporary optimization to reduce the number 
+  // of tokens sent to GPT4. Need to add a more robust preprocessing algorithm.
   const targetSnippet = "See questions and answers";
-
   const [trimmedString] = input.split(targetSnippet);
-  console.log(trimmedString);
+  console
   const response = await openai.createChatCompletion({
     model: 'gpt-4-0314',
     messages: [
@@ -91,10 +92,8 @@ async function getTopCitedAbstracts(supplement: string, limit: number): Promise<
     const searchResponse = await axios.get(searchUrl);
     const pmids: string[] = searchResponse.data.esearchresult.idlist;
 
-    console.log("pmids:", pmids);
-
     const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join()}&retmode=xml`;
-    console.log(fetchUrl);
+    console.log("Fetching articles from the following URL..." + fetchUrl);
   
     try {
       const fetchResponse = await axios.get(fetchUrl);
@@ -140,13 +139,12 @@ async function generateOutput(gpt4ParsedData: string | undefined): Promise<Healt
     ingredientEvaluations.push(evaluation);
   }
 
-  console.log("ingredientEvaluations:", ingredientEvaluations);
-
   const output: HealthAPISummarization = {
     product_name: parsedGpt4Data.product_name,
     active_ingredients: ingredientEvaluations
   };
-
+  console.log(output);
+  console.log("Parsed the ingredients...");
   return output;
 }
 
@@ -155,14 +153,63 @@ app.get('/', (req, res) => {
 })
 
 app.post('/process-webpage-data', async (req, res) => {
+  // TODO(Lauren): This is a demo only: to be removed 
+  // const sample = {"results": [
+  //   {
+  //   "ingredient": "GABA",
+  //   "claims": [
+  //       {
+  //           "claim": "promotes relaxation",
+  //           "correctness": "Found potential supporting evidence",
+  //           "supporting_evidence": [
+  //               {
+  //                   "source": "Psychobiotics",
+  //                   "url": "",
+  //                   "summary": "Probiotic treatment with Lactobacillus helveticus R0052 and Bifidobacterium longum R0175 increased the secretion of anti-inflammatory cytokines and decreased pro-inflammatory cytokines, which may promote relaxation through the gut-brain axis."
+  //               }
+  //           ],
+  //           "conflicting_evidence": []
+  //       },
+  //       {
+  //           "claim": "helps combat stress",
+  //           "correctness": "Found potential supporting evidence",
+  //           "supporting_evidence": [
+  //               {
+  //                   "source": "Probiotics",
+  //                   "url": "",
+  //                   "summary": "TLP (a combination of Lactobacillus caseiS1, Enterococcus faeciumS4, and L. harbinensisS6) showed an increase in GABA production, a neurotransmitter linked to stress reduction."
+  //               },
+  //               {
+  //                   "source": "Prebiotics",
+  //                   "url": "",
+  //                   "summary": "HMO (human milk oligosaccharides) treatment increased GABA levels in both children and adults, which is linked to the gut-brain axis and may help combat stress."
+  //               }
+  //           ],
+  //           "conflicting_evidence": []
+  //       }
+  //   ],
+  //   "reported_benefits": [
+  //       "promotes relaxation",
+  //       "helps combat stress",
+  //       "reduces inflammation",
+  //       "improves gastrointestinal activity",
+  //       "enhances anti-anxiety homeostasis"
+  //   ],
+  //   "reported_cons": [
+  //       "survival rates of some probiotic strains decrease during gastric phase"
+  //   ]
+  //   }]}
+    
+  // res.json(sample);
   const webpageData = req.body.data;
-  console.log("made it");
-
+  console.log(webpageData);
+  console.log("Got a request to process the webpage data!");
   const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
   // Generate final JSON output
   const output = await generateOutput(gpt4ParsedData);
-
-  res.json(output);
+  const jsonOutput = JSON.stringify(output);
+  console.log("Here is the final output of the supplement factcheck:" + jsonOutput);
+  res.json(jsonOutput);
 });
 
 const port = process.env.PORT || 3000;
