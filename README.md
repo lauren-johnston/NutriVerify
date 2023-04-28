@@ -1,6 +1,9 @@
 # NutriVerify
 Fact check information about supplements
 
+![Demo](media/demo.png)
+
+
 ## How to run this repo
 
 1. Clone the repo locally

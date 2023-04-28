@@ -1,6 +1,6 @@
 body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    width: 400px;
+    width: 500px;
     margin: 0;
     padding: 20px;
     background-color: #f5f5f5;
@@ -92,4 +92,4 @@ tr:nth-child(even) {
     max-width: 100%;
     table-layout: fixed;
     white-space: wrap;
-  }
+}

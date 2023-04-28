@@ -163,4 +163,49 @@ const ollyStressVitaminSample = {"active_ingredients": [
     ]
     }]};
 
-export { ollyStressVitaminSample, multiVitaminSample };
+const resveratrolSample = {
+    "product_name": "Pure Encapsulations Resveratrol",
+    "active_ingredients": [
+        {
+            "ingredient": "Trans-resveratrol",
+            "claims": [
+                {
+                    "claim": "Supports heart and blood vessel health",
+                    "correctness": "Found potential supporting evidence",
+                    "supporting_evidence": [
+                        {
+                            "source": "Resveratrol-loaded liposomal nanoparticles",
+                            "url": "",
+                            "summary": "Dietary supplementation with Resv-Lipo NPs improved the growth rate of heat-stressed birds and showed restored functions of the kidney and the liver as well as improvements in the lipid profile. These results suggest potential positive effects on heart and blood vessel health."
+                        }
+                    ],
+                    "conflicting_evidence": []
+                },
+                {
+                    "claim": "Antioxidant",
+                    "correctness": "Found potential supporting evidence",
+                    "supporting_evidence": [
+                        {
+                            "source": "Resveratrol effects on oxidized soybean oil",
+                            "url": "",
+                            "summary": "Dietary resveratrol supplementation improved the antioxidant capacity in piglets, increasing the activity levels of sucrase, lipase, and α-amylase, and the mRNA expression of FABP1, SOD2, and IL-10."
+                        }
+                    ],
+                    "conflicting_evidence": []
+                },
+                {
+                    "claim": "Cardioprotectant properties",
+                    "correctness": "Unable to assess claim correctness",
+                    "supporting_evidence": [],
+                    "conflicting_evidence": []
+                }
+            ],
+            "reported_benefits": [
+                "Supports heart and blood vessel health",
+                "Antioxidant"
+            ],
+            "reported_cons": []
+        }
+    ]
+}
+export { ollyStressVitaminSample, multiVitaminSample, resveratrolSample };

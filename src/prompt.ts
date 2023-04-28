@@ -34,7 +34,12 @@ Make sure to be true to the source and only include information that is actually
 
 const healthAPISummarizationPrompt = `
 Pretend you are an expert ETL Analyst. Given an active ingredient for a supplement and an array of claims that were made about it by the seller, use the
-top abstracts studying this active ingredient to populate the JSON output below:
+top abstracts studying this active ingredient to populate the JSON output below.
+
+Try your best to populate both supporting and conflicting claims if the data
+supports it.
+
+Return valid JSON.
 
 {
 "ingredient": "<ingredient_1>",

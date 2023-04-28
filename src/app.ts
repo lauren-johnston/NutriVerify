@@ -5,9 +5,9 @@ import cors from 'cors';
 import { webpageExtractionPrompt, healthAPISummarizationPrompt} from './prompt';
 import { Configuration, OpenAIApi } from 'openai';
 import cheerio from 'cheerio';
-import { multiVitaminSample } from './sampleData';
+import { multiVitaminSample, resveratrolSample } from './sampleData';
 import { ActiveIngredient, WebpageExtraction, HealthAPISummarization } from './interfaces';
-import { preprocessInput } from './helpers';
+import { parseOriginalData, preprocessInput } from './helpers';
 dotenv.config();
 
 const configuration = new Configuration({
@@ -87,7 +87,7 @@ async function getTopCitedAbstracts(supplement: string, limit: number): Promise<
   }
 }
 
-async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<any> {
+async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<ActiveIngredient | {}> {
 /**
  * Evaluate claims for a given active ingredient using GPT-4 summarization.
  * 
@@ -95,6 +95,8 @@ async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<any> 
  * @returns A promise that resolves to the GPT-4 summary of the claims.
  * @throws If the API call to get top-cited abstracts or GPT-4 summarization fails.
  */
+  // TODO(Lauren): Consider not running this function if no claims are provided
+  // or limiting the number of ingredients to evaluate
   // Get the top-cited abstracts for the active ingredient
   const topCitedAbstracts = await getTopCitedAbstracts(activeIngredient.ingredient, 5);
 
@@ -104,7 +106,9 @@ async function evaluateClaims(activeIngredient: ActiveIngredient): Promise<any> 
   // Call GPT-4 to generate a summary of the claims
   const gpt4Summary = await callGPT4(inputData, healthAPISummarizationPrompt);
 
-  return gpt4Summary;
+  const parsedGpt4Data = parseOriginalData(gpt4Summary);
+
+  return parsedGpt4Data;
 }
 
 async function generateOutput(gpt4ParsedData: string | undefined): Promise<HealthAPISummarization | {}> {
@@ -130,7 +134,7 @@ async function generateOutput(gpt4ParsedData: string | undefined): Promise<Healt
 
   const output: HealthAPISummarization = {
     product_name: parsedGpt4Data.product_name,
-    active_ingredients: ingredientEvaluations
+    active_ingredients: ingredientEvaluations as ActiveIngredient[],
   };
   console.log(output);
   console.log("Parsed the ingredients...");
@@ -143,20 +147,24 @@ app.get('/', (req, res) => {
 
 app.post('/process-webpage-data', async (req, res) => {
   // TODO(Lauren): This is for a demo only: to be removed 
-  // const sample = multiVitaminSample; 
-  // res.json(sample);
+  const sample = resveratrolSample; 
+  res.json(sample);
 
-  const webpageData = req.body.data;
-  console.log(webpageData);
-  console.log("Got a request to process the webpage data!");
-  const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
-  console.log("Parsed the webpage data...", gpt4ParsedData);
-  // Generate final JSON output
-  const output = await generateOutput(gpt4ParsedData);
-  const jsonOutput = JSON.stringify(output);
+  // const webpageData = req.body.data;
+  // console.log("-----------------------------------------");
+  // console.log(webpageData);
+  // console.log("-----------------------------------------");
+  // console.log("We got a request to process the webpage data! Let's log the results for demo purposes.");
+  // const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
+  // console.log("Parsed the webpage data...", gpt4ParsedData);
+  // // Generate final JSON output
+  // const output = await generateOutput(gpt4ParsedData);
+  // console.log(output);
+  // // const jsonData = parseOriginalData(output);
+  // // const jsonOutput = JSON.stringify(jsonData);
   
-  console.log("Here is the final output of the supplement factcheck:" + jsonOutput);
-  res.json(jsonOutput);
+  // console.log("Here is the final output of the supplement factcheck:" + output);
+  // res.json(output);
 });
 
 const port = process.env.PORT || 3000;
