@@ -146,25 +146,26 @@ app.get('/', (req, res) => {
 })
 
 app.post('/process-webpage-data', async (req, res) => {
-  // TODO(Lauren): This is for a demo only: to be removed 
-  const sample = resveratrolSample; 
-  res.json(sample);
+  // NOTE(Lauren): Enable for quick demo only
+  // const sample = resveratrolSample; 
+  // res.json(sample);
+  // Remove when the full demo is faster :)
 
-  // const webpageData = req.body.data;
-  // console.log("-----------------------------------------");
-  // console.log(webpageData);
-  // console.log("-----------------------------------------");
-  // console.log("We got a request to process the webpage data! Let's log the results for demo purposes.");
-  // const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
-  // console.log("Parsed the webpage data...", gpt4ParsedData);
-  // // Generate final JSON output
-  // const output = await generateOutput(gpt4ParsedData);
-  // console.log(output);
-  // // const jsonData = parseOriginalData(output);
-  // // const jsonOutput = JSON.stringify(jsonData);
+  const webpageData = req.body.data;
+  console.log("-----------------------------------------");
+  console.log(webpageData);
+  console.log("-----------------------------------------");
+  console.log("We got a request to process the webpage data! Let's log the results for demo purposes.");
+  const gpt4ParsedData = await callGPT4(webpageData, webpageExtractionPrompt);
+  console.log("Parsed the webpage data...", gpt4ParsedData);
+  // Generate final JSON output
+  const output = await generateOutput(gpt4ParsedData);
+  console.log(output);
+  // const jsonData = parseOriginalData(output);
+  // const jsonOutput = JSON.stringify(jsonData);
   
-  // console.log("Here is the final output of the supplement factcheck:" + output);
-  // res.json(output);
+  console.log("Here is the final output of the supplement factcheck:" + output);
+  res.json(output);
 });
 
 const port = process.env.PORT || 3000;
