@@ -23,7 +23,7 @@ async function callGPT4(input: string): Promise<string | undefined> {
     messages: [
       {
         "role": "user",
-        "content": "Hello World!"
+        "content": prompt + input
       }
     ],
   });
@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
 app.post('/process-webpage-data', async (req, res) => {
   // TODO(Lauren): enable error handling after doing more debugging
   // try {
-    const webpageData = req.body.webpageData;
+    const webpageData = req.body.data;
     const gpt4ParsedData = await callGPT4(webpageData);
     const openFDAResult = await callOpenFDAAPI(gpt4ParsedData);
     res.json(openFDAResult);
