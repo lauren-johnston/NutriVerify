@@ -1,5 +1,7 @@
 # NutriVerify
-Fact check information about supplements
+Fact check information about supplements seamlessly while online shopping via Chrome Extension
+
+Built for Replit/SPC hackathon in April 2023
 
 Demo Video: https://www.loom.com/share/ed3f2bd2f29b45f29a0be982a7dac51f
 
